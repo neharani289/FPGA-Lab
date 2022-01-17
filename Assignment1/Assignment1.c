@@ -1,24 +1,41 @@
 #include <stdio.h>
-#include <conio.h>
 
- typedef char bit;
- bit carry=0;
-bit halfadd(bit A,bit B){
- carry=A&B;
-   return A^B;
- }
+//2-input NAND gate
+unsigned int NAND (unsigned int A, unsigned int B) {
+    return !(A & B);    
+}
+
 int main()
 {
- int i,j,result;
- printf("A   B  |  Sum  Carry\n");
- for(i=0;i<2;i++)
- {
-  for(j=0;j<2;j++)
-  {
-   result=halfadd(i,j);
-   printf("%d   %d  |  ",i,j);
-   printf("%d   %d\n",result,carry);
-  }
- }
- return 0;
+    //Binary inputs for half adder
+    unsigned int A=0x00, B=0x00, n; 
+    
+    //Variables for output sum and carry
+    unsigned int mask = 0x01;
+    unsigned int sum,carry,nand_sum, nand_carry;
+    printf("---------------------------------------------------- \n");
+    printf("                                |  Using_NAND_only |  \n");
+    printf("----------------------------------------------------  \n");
+    printf("Binary_Input  |  Sum   | Carry  |  Sum  |  Carry   | \n");
+    printf("----------------------------------------------------  \n");
+    
+    for (n = 0x00; n<0x04; n++)              
+    {
+        //Binary inputs
+        A = n>>1;    
+        B = n>>0;    
+
+        //Using expression of sum and carry
+        sum = A ^ B;
+        carry = A & B;
+        
+        //verifying the expression obtained by 2-input nand gates only.
+        nand_sum = NAND( NAND( NAND( A, B ), A ), NAND( NAND( A, B ), B ) );
+        nand_carry = NAND( NAND( A, B ),NAND( A, B ) );
+        
+        //Printing the results.
+        printf("    %x  %x          %x        %x        %x        %x\n", mask&A, mask&B, mask&sum, mask&carry, nand_sum, nand_carry);
+    }
+    printf("----------------------------------------------------  \n");
+    return 0;
 }
